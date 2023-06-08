@@ -1,1 +1,1 @@
-#0x02. Python - import & modules_byDev_G
+#0x02. Python - import & modules_byG_Dev
