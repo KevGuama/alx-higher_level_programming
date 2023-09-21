@@ -1,21 +1,41 @@
 #!/usr/bin/python3
-"""
-Lists all values in the states tables of a database where name
-matches the argument
-"""
-import sys
+"""Display name argument of states table"""
 import MySQLdb
+from sys import argv
+
+
+def filter__names():
+    """Takes arguments argv to list from database
+    Only lists with states that start with  N
+        argv[1]: mysql username
+        argv[2]: mysql password
+        argv[3]: database name
+    """
+    db = MySQLdb.connect(host="localhost",
+                         port=3306,
+                         user=argv[1],
+                         passwd=argv[2],
+                         db=argv[3],
+                         charset="utf8",
+                         )
+
+    # Getting a cursor in MySQLdb python
+    cur = db.cursor()
+
+    # Executing db queries
+    cur.execute("SELECT * FROM states WHERE BINARY name='{:s}'\
+                ORDER BY id ASC".format(argv[4]))
+
+    # fetches all the rows of a query result
+    query_rows = cur.fetchall()
+
+    # Printing the result one in one
+    for row in query_rows:
+        print(row)
+
+    cur.close()
+    db.close()
+
 
 if __name__ == '__main__':
-    db = MySQLdb.connect(user=sys.argv[1], passwd=sys.argv[2],
-                         db=sys.argv[3], port=3306)
-
-    cur = db.cursor()
-    cur.execute("SELECT * \
-    FROM states \
-    WHERE CONVERT(`name` USING Latin1) \
-    COLLATE Latin1_General_CS = '{}';".format(sys.argv[4]))
-    states = cur.fetchall()
-
-    for state in states:
-        print(state)
+    filter__names()
